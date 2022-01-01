@@ -1,0 +1,17 @@
+com\klinksoftware\neurallife\AppWindow.class
+com\klinksoftware\neurallife\item\ItemRobot.class
+com\klinksoftware\neurallife\item\ItemMonster.class
+com\klinksoftware\neurallife\simulation\Configuration$ConfigurationMonster.class
+com\klinksoftware\neurallife\LifeCanvas.class
+com\klinksoftware\neurallife\NeuralLife.class
+com\klinksoftware\neurallife\simulation\Configuration$ConfigurationMisc.class
+com\klinksoftware\neurallife\simulation\Simulation.class
+com\klinksoftware\neurallife\item\Item.class
+com\klinksoftware\neurallife\simulation\Board.class
+com\klinksoftware\neurallife\simulation\Configuration$ConfigurationRobot.class
+com\klinksoftware\neurallife\simulation\Configuration$ConfigurationSetup.class
+com\klinksoftware\neurallife\SetupDialog.class
+com\klinksoftware\neurallife\simulation\Configuration$ConfigurationFood.class
+com\klinksoftware\neurallife\item\ItemRock.class
+com\klinksoftware\neurallife\item\ItemFood.class
+com\klinksoftware\neurallife\simulation\Configuration.class

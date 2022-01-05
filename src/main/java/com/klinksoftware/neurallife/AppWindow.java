@@ -1,6 +1,7 @@
 package com.klinksoftware.neurallife;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.klinksoftware.neurallife.simulation.Board;
 import com.klinksoftware.neurallife.simulation.Configuration;
 import com.klinksoftware.neurallife.simulation.Simulation;
 
@@ -164,10 +165,9 @@ public class AppWindow implements WindowListener {
 
     // start main window
     public void start() {
-        int wid;
-        int high;
         URL iconURL;
         Image image;
+        Dimension dimension;
         Runnable loop;
 
         try {
@@ -198,10 +198,6 @@ public class AppWindow implements WindowListener {
         } catch (Exception e) {
         }
 
-        // life canvas size
-        wid = (config.setup.gridXCount + 2) * config.setup.gridSize;
-        high = (config.setup.gridYCount + 2) * config.setup.gridSize;
-
         // create the window
         frame = new JFrame();
 
@@ -226,9 +222,11 @@ public class AppWindow implements WindowListener {
         frame.add(toolBar, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
         // life canvas
+        dimension = new Dimension(config.setup.worldWidth, (config.setup.worldHeight + Board.STATUS_BAR_HEIGHT));
+
         lifeCanvas = new LifeCanvas(config, random);
-        lifeCanvas.setSize(wid, high);
-        lifeCanvas.setPreferredSize(new Dimension(wid, high));
+        lifeCanvas.setSize(dimension);
+        lifeCanvas.setPreferredSize(dimension);
         lifeCanvas.setFocusable(false);
 
         frame.add(lifeCanvas, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -250,17 +248,16 @@ public class AppWindow implements WindowListener {
     }
 
     public void resize() {
-        int wid, high;
+        Dimension dimension;
 
         // stop the simulation
         simulationStop();
 
         // resize window
-        wid = (config.setup.gridXCount + 2) * config.setup.gridSize;
-        high = (config.setup.gridYCount + 2) * config.setup.gridSize;
+        dimension = new Dimension(config.setup.worldWidth, (config.setup.worldHeight + Board.STATUS_BAR_HEIGHT));
 
-        lifeCanvas.setSize(wid, high);
-        lifeCanvas.setPreferredSize(new Dimension(wid, high));
+        lifeCanvas.setSize(dimension);
+        lifeCanvas.setPreferredSize(dimension);
 
         frame.pack();
         frame.setLocationRelativeTo(null);

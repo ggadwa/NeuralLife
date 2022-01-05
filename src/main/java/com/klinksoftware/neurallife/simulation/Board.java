@@ -20,6 +20,8 @@ import javax.imageio.ImageIO;
 
 public class Board {
 
+    public static final int STATUS_BAR_HEIGHT = 30;
+
     private static final String[] IMAGE_NAMES = {"food", "rock", "monster", "robot"};
 
     private ArrayList<Item> items;
@@ -87,23 +89,15 @@ public class Board {
 
     public void draw(Graphics2D g, int step) {
         int x, y;
-        int gridSize, gridXCount, gridYCount;
         String stepStr;
 
-        gridSize = config.setup.gridSize;
-        gridXCount = config.setup.gridXCount;
-        gridYCount = config.setup.gridYCount;
+        // playing field
+        g.setColor(Color.GREEN);
+        g.fillRect(0, 0, config.setup.worldWidth, config.setup.worldHeight);
 
-        // black for death edge
-        g.fillRect(0, 0, ((gridXCount + 2) * gridSize), ((gridYCount + 2) * gridSize));
-
-        // draw the squares
-        for (y = 0; y != gridYCount; y++) {
-            for (x = 0; x != gridXCount; x++) {
-                g.setColor(((((x + y) & 0x1)) == 0) ? Color.LIGHT_GRAY : Color.WHITE);
-                g.fillRect(((x + 1) * gridSize), ((y + 1) * gridSize), gridSize, gridSize);
-            }
-        }
+        // black for status bar
+        g.setColor(Color.BLACK);
+        g.fillRect(0, config.setup.worldHeight, config.setup.worldWidth, STATUS_BAR_HEIGHT);
 
         // draw the items
         for (Item item : items) {
@@ -116,8 +110,8 @@ public class Board {
         g.setColor(Color.BLUE);
         g.setFont(font);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        x = (((gridXCount + 2) * gridSize) - 5) - g.getFontMetrics().stringWidth(stepStr);
-        g.drawString(stepStr, x, (gridSize - ((gridSize - 18) / 1)));
+        x = (config.setup.worldWidth - 5) - g.getFontMetrics().stringWidth(stepStr);
+        g.drawString(stepStr, x, ((config.setup.worldHeight + STATUS_BAR_HEIGHT) - 10));
     }
 
     public int countItem(Class c) {
@@ -135,29 +129,21 @@ public class Board {
     }
 
     private Point getRandomSpot() {
-        int offset;
-        int gridTotal, gridXCount, gridYCount;
-        boolean empty, passOnce;
+        int randomWidth, randomHeight;
+        boolean empty;
         Point pnt;
 
-        gridXCount = config.setup.gridXCount;
-        gridYCount = config.setup.gridYCount;
+        randomWidth = config.setup.worldWidth - Item.IMAGE_SIZE;
+        randomHeight = config.setup.worldHeight - Item.IMAGE_SIZE;
 
-        gridTotal = gridXCount * gridYCount;
-        offset = random.nextInt(gridTotal);
-
-        // create an offset, and then keep adding
-        // 1 until we find an empty spot
         pnt = new Point(0, 0);
 
-        passOnce = false;
-
         while (true) {
-            pnt.setLocation((offset % gridXCount), (offset / gridXCount));
+            pnt.setLocation((random.nextInt(randomWidth) + Item.IMAGE_OFFSET), (random.nextInt(randomHeight) + Item.IMAGE_OFFSET));
 
             empty = true;
             for (Item item : items) {
-                if (item.atPoint(pnt)) {
+                if (item.collide(pnt)) {
                     empty = false;
                     break;
                 }
@@ -165,16 +151,6 @@ public class Board {
 
             if (empty) {
                 return (pnt);
-            }
-
-            offset++;
-            if (offset >= gridTotal) {
-                if (passOnce) {
-                    return (null);
-                }
-
-                offset = 0;
-                passOnce = true;
             }
         }
     }

@@ -11,12 +11,12 @@ public class Configuration {
 
         setup = new ConfigurationSetup();
         setup.millisecondPerStep = 1000;
-        setup.gridSize = 25;
-        setup.gridXCount = 40;
-        setup.gridYCount = 25;
+        setup.worldWidth = 1000;
+        setup.worldHeight = 600;
 
         robot = new ConfigurationRobot();
-        robot.initialFuel = 100;
+        robot.initialFuelCount = 100;
+        robot.reproduceFuelCount = 150;
         robot.driveSurvival = 0;
         robot.driveReproduce = 0;
         robot.driveEat = 0;
@@ -24,6 +24,9 @@ public class Configuration {
 
         monster = new ConfigurationMonster();
         monster.count = 10;
+        monster.sightDistance = 5;
+        monster.maxChaseStepCount = 10;
+        monster.chaseCoolDownStepCount = 5;
 
         food = new ConfigurationFood();
         food.perStepAddRate = 10;
@@ -38,14 +41,13 @@ public class Configuration {
     public class ConfigurationSetup {
 
         public int millisecondPerStep;
-        public int gridSize;
-        public int gridXCount;
-        public int gridYCount;
+        public int worldWidth;
+        public int worldHeight;
     }
 
     public class ConfigurationRobot {
-
-        public int initialFuel;
+        public int initialFuelCount;
+        public int reproduceFuelCount;
         public int driveSurvival;
         public int driveReproduce;
         public int driveEat;
@@ -54,6 +56,9 @@ public class Configuration {
 
     public class ConfigurationMonster {
         public int count;
+        public int sightDistance;
+        public int maxChaseStepCount;
+        public int chaseCoolDownStepCount;
     }
 
     public class ConfigurationFood {
@@ -64,7 +69,6 @@ public class Configuration {
     }
 
     public class ConfigurationMisc {
-
         public int rockCount;
     }
 }

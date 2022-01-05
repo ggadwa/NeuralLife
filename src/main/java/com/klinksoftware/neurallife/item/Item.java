@@ -10,6 +10,9 @@ import java.util.Random;
 
 public class Item {
 
+    public final static int IMAGE_SIZE = 16;
+    public final static int IMAGE_OFFSET = 8;
+
     private final Configuration config;
     private final Random random;
     private final LifeCanvas lifeCanvas;
@@ -26,17 +29,21 @@ public class Item {
         this.img = img;
     }
 
-    public boolean atPoint(Point pnt) {
-        return (this.pnt.equals(pnt));
+    public boolean collide(Point pnt2) {
+        if ((pnt.x - IMAGE_OFFSET) > (pnt2.x + IMAGE_OFFSET)) {
+            return (false);
+        }
+        if ((pnt.x + IMAGE_OFFSET) < (pnt2.x - IMAGE_OFFSET)) {
+            return (false);
+        }
+        if ((pnt.y - IMAGE_OFFSET) > (pnt2.y + IMAGE_OFFSET)) {
+            return (false);
+        }
+        return ((pnt.y + IMAGE_OFFSET) >= (pnt2.y - IMAGE_OFFSET));
     }
 
     public void draw(Graphics2D g) {
-        int dx, dy;
-
-        dx = ((pnt.x + 1) * config.setup.gridSize) + ((config.setup.gridSize - img.getWidth(null)) / 2);
-        dy = ((pnt.y + 1) * config.setup.gridSize) + ((config.setup.gridSize - img.getHeight(null)) / 2);
-
-        g.drawImage(img, dx, dy, lifeCanvas);
+        g.drawImage(img, (pnt.x - IMAGE_OFFSET), (pnt.y - IMAGE_OFFSET), lifeCanvas);
     }
 
     public void runStep(int step) {

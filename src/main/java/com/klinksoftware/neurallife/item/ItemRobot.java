@@ -10,6 +10,9 @@ public class ItemRobot extends Item {
 
     public ItemRobot(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, Point pnt) {
         super(config, random, lifeCanvas, board, pnt, board.getImage("robot"));
+
+        setupSight(config.monster.sightSweep, config.monster.sightDistance);
+        setSightAngle(0 * random.nextInt(360));
     }
 
     @Override

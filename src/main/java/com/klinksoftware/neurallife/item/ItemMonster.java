@@ -10,10 +10,13 @@ public class ItemMonster extends Item {
 
     public ItemMonster(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, Point pnt) {
         super(config, random, lifeCanvas, board, pnt, board.getImage("monster"));
+
+        setupSight(config.monster.sightSweep, config.monster.sightDistance);
+        setSightAngle(random.nextInt(360));
     }
 
     @Override
     public void runStep(int step) {
-
+        setSightAngle((getSightAngle() + 1) % 360);
     }
 }

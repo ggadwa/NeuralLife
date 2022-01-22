@@ -3,6 +3,7 @@ package com.klinksoftware.neurallife.item;
 import com.klinksoftware.neurallife.LifeCanvas;
 import com.klinksoftware.neurallife.simulation.Board;
 import com.klinksoftware.neurallife.simulation.Configuration;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ public class Item {
     private final Board board;
     private final Point pnt;
     private final BufferedImage img;
+    private int sightAngle, sightSweep, sightDistance;
 
     public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, Point pnt, BufferedImage img) {
         this.config = config;
@@ -27,6 +29,23 @@ public class Item {
         this.board = board;
         this.pnt = (Point) pnt.clone();
         this.img = img;
+
+        this.sightAngle = 0;
+        this.sightSweep = 0;
+        this.sightDistance = 0;
+    }
+
+    protected final void setupSight(int sweep, int distance) {
+        this.sightSweep = sweep;
+        this.sightDistance = distance;
+    }
+
+    protected final void setSightAngle(int angle) {
+        this.sightAngle = angle;
+    }
+
+    protected final int getSightAngle() {
+        return (sightAngle);
     }
 
     public boolean collide(Point pnt2) {
@@ -42,7 +61,27 @@ public class Item {
         return ((pnt.y + IMAGE_OFFSET) >= (pnt2.y - IMAGE_OFFSET));
     }
 
-    public void draw(Graphics2D g) {
+    public void backgroundDraw(Graphics2D g) {
+        int x, y;
+        int halfDistance, startAng;
+
+        // the sight arc
+        if (sightSweep != 0) {
+            halfDistance = sightDistance / 2;
+            x = pnt.x - halfDistance;
+            y = pnt.y - halfDistance;
+
+            startAng = sightAngle - (sightSweep / 2);
+            if (startAng < 0) {
+                startAng = 360 + startAng;
+            }
+
+            g.setColor(Color.BLUE);
+            g.fillArc(x, y, sightDistance, sightDistance, startAng, sightSweep);
+        }
+    }
+
+    public void foregroundDraw(Graphics2D g) {
         g.drawImage(img, (pnt.x - IMAGE_OFFSET), (pnt.y - IMAGE_OFFSET), lifeCanvas);
     }
 

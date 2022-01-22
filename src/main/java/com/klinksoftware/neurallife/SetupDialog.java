@@ -25,9 +25,10 @@ public class SetupDialog extends JDialog {
     private Configuration config;
     private JSlider setupMillisecondPerStep, setupWorldWidth, setupWorldHeight;
     private JSlider robotInitialFuelCount, robotReproduceFuelCount,
-            robotDriveSurvival, robotDriveReproduce, robotDriveEat, robotDriveCuriosity;
-    private JSlider monsterCount,
-            monsterSightDistance, monsterMaxChaseStepCount, monsterChaseCoolDownStepCount;
+            robotSightSweep, robotSightDistance;
+    private JSlider robotDriveSurvival, robotDriveReproduce, robotDriveEat, robotDriveCuriosity;
+    private JSlider monsterCount, monsterSightSweep, monsterSightDistance,
+            monsterMaxChaseStepCount, monsterChaseCoolDownStepCount;
     private JSlider foodPerStepAddRate, foodInitialCount, foodMaxCount, foodFuelPerFood;
     private JSlider miscRockCount;
 
@@ -43,12 +44,16 @@ public class SetupDialog extends JDialog {
 
         config.robot.initialFuelCount = (int) robotInitialFuelCount.getValue();
         config.robot.reproduceFuelCount = (int) robotReproduceFuelCount.getValue();
+        config.robot.sightSweep = (int) robotSightSweep.getValue();
+        config.robot.sightDistance = (int) robotSightDistance.getValue();
+
         config.robot.driveSurvival = (int) robotDriveSurvival.getValue();
         config.robot.driveReproduce = (int) robotDriveReproduce.getValue();
         config.robot.driveEat = (int) robotDriveEat.getValue();
         config.robot.driveCuriosity = (int) robotDriveCuriosity.getValue();
 
         config.monster.count = (int) monsterCount.getValue();
+        config.monster.sightSweep = (int) monsterSightSweep.getValue();
         config.monster.sightDistance = (int) monsterSightDistance.getValue();
         config.monster.maxChaseStepCount = (int) monsterMaxChaseStepCount.getValue();
         config.monster.chaseCoolDownStepCount = (int) monsterChaseCoolDownStepCount.getValue();
@@ -101,7 +106,7 @@ public class SetupDialog extends JDialog {
 
     public void initialize() {
         JTabbedPane tab;
-        JPanel dialog, setupTab, robotTab, monsterTab, foodTab, miscTab, buttons;
+        JPanel dialog, setupTab, robotSetupTab, robotDriveTab, monsterTab, foodTab, miscTab, buttons;
         JButton okButton, cancelButton;
 
         setTitle("Simulation Setup");
@@ -125,24 +130,32 @@ public class SetupDialog extends JDialog {
         setupWorldHeight = addSlider(setupTab, 2, 500, 1000, true, "World Height:");
 
         // robot tab
-        robotTab = new JPanel(new GridBagLayout());
-        tab.add("Robot", robotTab);
+        robotSetupTab = new JPanel(new GridBagLayout());
+        tab.add("Robot Setup", robotSetupTab);
 
-        robotInitialFuelCount = addSlider(robotTab, 0, 0, 1000, true, "Initial Fuel Count:");
-        robotReproduceFuelCount = addSlider(robotTab, 1, 0, 1000, true, "Reproduce Fuel Count:");
-        robotDriveSurvival = addSlider(robotTab, 2, 0, 100, false, "Survival:");
-        robotDriveReproduce = addSlider(robotTab, 3, 0, 100, false, "Reproduce:");
-        robotDriveEat = addSlider(robotTab, 4, 0, 100, false, "Eat:");
-        robotDriveCuriosity = addSlider(robotTab, 5, 0, 100, false, "Curiosity:");
+        robotInitialFuelCount = addSlider(robotSetupTab, 0, 0, 1000, true, "Initial Fuel Count:");
+        robotReproduceFuelCount = addSlider(robotSetupTab, 1, 0, 1000, true, "Reproduce Fuel Count:");
+        robotSightSweep = addSlider(robotSetupTab, 2, 0, 360, true, "Sight Sweep Angle:");
+        robotSightDistance = addSlider(robotSetupTab, 3, 0, 300, true, "Sight Distance:");
+
+        // drive tab
+        robotDriveTab = new JPanel(new GridBagLayout());
+        tab.add("Robot Drive", robotDriveTab);
+
+        robotDriveSurvival = addSlider(robotDriveTab, 0, 0, 100, false, "Survival:");
+        robotDriveReproduce = addSlider(robotDriveTab, 1, 0, 100, false, "Reproduce:");
+        robotDriveEat = addSlider(robotDriveTab, 2, 0, 100, false, "Eat:");
+        robotDriveCuriosity = addSlider(robotDriveTab, 3, 0, 100, false, "Curiosity:");
 
         // monster tab
         monsterTab = new JPanel(new GridBagLayout());
         tab.add("Monster", monsterTab);
 
         monsterCount = addSlider(monsterTab, 0, 0, 100, true, "Count:");
-        monsterSightDistance = addSlider(monsterTab, 1, 0, 100, true, "Sight Distance:");
-        monsterMaxChaseStepCount = addSlider(monsterTab, 2, 0, 100, true, "Max Chase Step Count:");
-        monsterChaseCoolDownStepCount = addSlider(monsterTab, 3, 0, 100, true, "Chase Cool Down Step Count:");
+        monsterSightSweep = addSlider(monsterTab, 1, 0, 360, true, "Sight Sweep Angle:");
+        monsterSightDistance = addSlider(monsterTab, 2, 0, 300, true, "Sight Distance:");
+        monsterMaxChaseStepCount = addSlider(monsterTab, 3, 0, 100, true, "Max Chase Step Count:");
+        monsterChaseCoolDownStepCount = addSlider(monsterTab, 4, 0, 100, true, "Chase Cool Down Step Count:");
 
         // food tab
         foodTab = new JPanel(new GridBagLayout());
@@ -190,9 +203,13 @@ public class SetupDialog extends JDialog {
         setupWorldWidth.setValue(config.setup.worldWidth);
         setupWorldHeight.setValue(config.setup.worldHeight);
 
-        // robot
+        // robot setup
         robotInitialFuelCount.setValue(config.robot.initialFuelCount);
         robotReproduceFuelCount.setValue(config.robot.reproduceFuelCount);
+        robotSightSweep.setValue(config.robot.sightSweep);
+        robotSightDistance.setValue(config.robot.sightDistance);
+
+        // robot drive
         robotDriveSurvival.setValue(config.robot.driveSurvival);
         robotDriveReproduce.setValue(config.robot.driveReproduce);
         robotDriveEat.setValue(config.robot.driveEat);
@@ -200,6 +217,7 @@ public class SetupDialog extends JDialog {
 
         // monster
         monsterCount.setValue(config.monster.count);
+        monsterSightSweep.setValue(config.monster.sightSweep);
         monsterSightDistance.setValue(config.monster.sightDistance);
         monsterMaxChaseStepCount.setValue(config.monster.maxChaseStepCount);
         monsterChaseCoolDownStepCount.setValue(config.monster.chaseCoolDownStepCount);

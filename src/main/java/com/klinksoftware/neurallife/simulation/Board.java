@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,30 +87,19 @@ public class Board {
     }
 
     public void draw(Graphics2D g, int step) {
-        int x, y;
-        String stepStr;
-
         // playing field
         g.setColor(Color.GREEN);
         g.fillRect(0, 0, config.setup.worldWidth, config.setup.worldHeight);
 
-        // black for status bar
-        g.setColor(Color.BLACK);
-        g.fillRect(0, config.setup.worldHeight, config.setup.worldWidth, STATUS_BAR_HEIGHT);
-
-        // draw the items
+        // item backgrounds
         for (Item item : items) {
-            item.draw(g);
+            item.backgroundDraw(g);
         }
 
-        // the step
-        stepStr = Integer.toString(step);
-
-        g.setColor(Color.BLUE);
-        g.setFont(font);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        x = (config.setup.worldWidth - 5) - g.getFontMetrics().stringWidth(stepStr);
-        g.drawString(stepStr, x, ((config.setup.worldHeight + STATUS_BAR_HEIGHT) - 10));
+        // item foregrounds
+        for (Item item : items) {
+            item.foregroundDraw(g);
+        }
     }
 
     public int countItem(Class c) {

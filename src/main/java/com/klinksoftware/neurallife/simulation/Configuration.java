@@ -17,6 +17,8 @@ public class Configuration {
         robot = new ConfigurationRobot();
         robot.initialFuelCount = 100;
         robot.reproduceFuelCount = 150;
+        robot.sightSweep = 45;
+        robot.sightDistance = 100;
         robot.driveSurvival = 0;
         robot.driveReproduce = 0;
         robot.driveEat = 0;
@@ -24,7 +26,8 @@ public class Configuration {
 
         monster = new ConfigurationMonster();
         monster.count = 10;
-        monster.sightDistance = 5;
+        monster.sightSweep = 45;
+        monster.sightDistance = 100;
         monster.maxChaseStepCount = 10;
         monster.chaseCoolDownStepCount = 5;
 
@@ -39,7 +42,6 @@ public class Configuration {
     }
 
     public class ConfigurationSetup {
-
         public int millisecondPerStep;
         public int worldWidth;
         public int worldHeight;
@@ -48,6 +50,8 @@ public class Configuration {
     public class ConfigurationRobot {
         public int initialFuelCount;
         public int reproduceFuelCount;
+        public int sightSweep;
+        public int sightDistance;
         public int driveSurvival;
         public int driveReproduce;
         public int driveEat;
@@ -56,6 +60,7 @@ public class Configuration {
 
     public class ConfigurationMonster {
         public int count;
+        public int sightSweep;
         public int sightDistance;
         public int maxChaseStepCount;
         public int chaseCoolDownStepCount;

@@ -9,6 +9,7 @@ com\klinksoftware\neurallife\simulation\Simulation.class
 com\klinksoftware\neurallife\item\Item.class
 com\klinksoftware\neurallife\simulation\Board.class
 com\klinksoftware\neurallife\simulation\Configuration$ConfigurationRobot.class
+com\klinksoftware\neurallife\InfoPanel.class
 com\klinksoftware\neurallife\simulation\Configuration$ConfigurationSetup.class
 com\klinksoftware\neurallife\SetupDialog.class
 com\klinksoftware\neurallife\simulation\Configuration$ConfigurationFood.class

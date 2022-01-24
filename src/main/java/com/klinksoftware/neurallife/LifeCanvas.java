@@ -13,19 +13,21 @@ public class LifeCanvas extends Canvas {
 
     private final Configuration config;
     private final Random random;
+    private final InfoPanel infoPanel;
     private BufferStrategy buffStrat;
     private Simulation simulation;
 
-    public LifeCanvas(Configuration config, Random random) {
+    public LifeCanvas(Configuration config, Random random, InfoPanel infoPanel) {
         super();
 
         this.config = config;
         this.random = random;
+        this.infoPanel = infoPanel;
 
         setBackground(Color.BLACK);
 
         // the simulation
-        simulation = new Simulation(config, random, this);
+        simulation = new Simulation(config, random, this, infoPanel);
     }
 
     public void initialize() {
@@ -53,6 +55,10 @@ public class LifeCanvas extends Canvas {
 
     public int getSimulationState() {
         return (simulation.getState());
+    }
+
+    public Simulation getSimulation() {
+        return (simulation);
     }
 
     public void draw() {

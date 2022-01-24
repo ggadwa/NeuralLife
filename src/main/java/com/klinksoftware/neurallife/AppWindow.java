@@ -223,19 +223,19 @@ public class AppWindow implements WindowListener {
 
         frame.add(toolBar);
 
-        // life canvas
-        lifeCanvas = new LifeCanvas(config, random);
-        lifeCanvas.setFocusable(false);
-        lifeCanvas.setBounds(0, TOOLBAR_HEIGHT, config.setup.worldWidth, (config.setup.worldHeight + Board.STATUS_BAR_HEIGHT));
-
-        frame.add(lifeCanvas);
-
         // info
         infoPanel = new InfoPanel();
         infoPanel.setBounds(config.setup.worldWidth, TOOLBAR_HEIGHT, INFO_WIDTH, (config.setup.worldHeight + Board.STATUS_BAR_HEIGHT));
         infoPanel.addControls();
 
         frame.add(infoPanel);
+
+        // life canvas
+        lifeCanvas = new LifeCanvas(config, random, infoPanel);
+        lifeCanvas.setFocusable(false);
+        lifeCanvas.setBounds(0, TOOLBAR_HEIGHT, config.setup.worldWidth, (config.setup.worldHeight + Board.STATUS_BAR_HEIGHT));
+
+        frame.add(lifeCanvas);
 
         // all the event listeners
         frame.addWindowListener(this);

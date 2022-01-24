@@ -22,6 +22,7 @@ public class Board {
     public static final int STATUS_BAR_HEIGHT = 30;
 
     private static final String[] IMAGE_NAMES = {"food", "rock", "monster", "robot"};
+    private static final Color BACKGROUND_COLOR = new Color(0.2f, 1.0f, 0.2f);
 
     private ArrayList<Item> items;
     private int produceFoodNextStep;
@@ -88,7 +89,7 @@ public class Board {
 
     public void draw(Graphics2D g, int step) {
         // playing field
-        g.setColor(Color.GREEN);
+        g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, config.setup.worldWidth, config.setup.worldHeight);
 
         // item backgrounds
@@ -116,7 +117,11 @@ public class Board {
         return (count);
     }
 
-    private Point getRandomSpot() {
+    public Point getCenterPoint() {
+        return (new Point((config.setup.worldWidth / 2), (config.setup.worldHeight / 2)));
+    }
+
+    public Point getRandomPoint() {
         int randomWidth, randomHeight;
         boolean empty;
         Point pnt;
@@ -143,52 +148,34 @@ public class Board {
         }
     }
 
-    private void addRock() {
+    public Point getRandomPointWithDistanceFromCenter(int dist) {
         Point pnt;
+        Point centerPnt;
 
-        pnt = getRandomSpot();
-        if (pnt == null) {
-            System.out.println("step 0: unable to add rock, out of spots");
-            return;
+        centerPnt = getCenterPoint();
+
+        while (true) {
+            pnt = getRandomPoint();
+            if (pnt.distance(centerPnt) >= dist) {
+                return (pnt);
+            }
         }
+    }
 
-        items.add(new ItemRock(config, random, lifeCanvas, this, pnt));
+    private void addRock() {
+        items.add(new ItemRock(config, random, lifeCanvas, this));
     }
 
     private void addMonster() {
-        Point pnt;
-
-        pnt = getRandomSpot();
-        if (pnt == null) {
-            System.out.println("step 0: unable to add monster, out of spots");
-            return;
-        }
-
-        items.add(new ItemMonster(config, random, lifeCanvas, this, pnt));
+        items.add(new ItemMonster(config, random, lifeCanvas, this));
     }
 
     private void addRobot(int step) {
-        Point pnt;
-
-        pnt = getRandomSpot();
-        if (pnt == null) {
-            System.out.println("step " + Integer.toString(step) + ": unable to add robot, out of spots");
-            return;
-        }
-
-        items.add(new ItemRobot(config, random, lifeCanvas, this, pnt));
+        items.add(new ItemRobot(config, random, lifeCanvas, this));
     }
 
     private void addFood(int step) {
-        Point pnt;
-
-        pnt = getRandomSpot();
-        if (pnt == null) {
-            System.out.println("step " + Integer.toString(step) + ": unable to add food, out of spots");
-            return;
-        }
-
-        items.add(new ItemFood(config, random, lifeCanvas, this, pnt));
+        items.add(new ItemFood(config, random, lifeCanvas, this));
     }
 
     private void runStepProduceFood(int step) {

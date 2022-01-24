@@ -1,5 +1,6 @@
 package com.klinksoftware.neurallife.simulation;
 
+import com.klinksoftware.neurallife.InfoPanel;
 import com.klinksoftware.neurallife.LifeCanvas;
 import java.awt.Graphics2D;
 import java.util.Random;
@@ -18,12 +19,14 @@ public class Simulation implements Runnable {
     private final Configuration config;
     private final Random random;
     private final LifeCanvas lifeCanvas;
+    private final InfoPanel infoPanel;
     private Board board;
 
-    public Simulation(Configuration config, Random random, LifeCanvas lifeCanvas) {
+    public Simulation(Configuration config, Random random, LifeCanvas lifeCanvas, InfoPanel infoPanel) {
         this.config = config;
         this.random = random;
         this.lifeCanvas = lifeCanvas;
+        this.infoPanel = infoPanel;
 
         board = new Board(config, random, lifeCanvas);
 
@@ -70,6 +73,15 @@ public class Simulation implements Runnable {
         return (state);
     }
 
+    // getters
+    public Board getBoard() {
+        return (board);
+    }
+
+    public int getStep() {
+        return (step);
+    }
+
     // draw
     public void draw(Graphics2D g) {
         board.draw(g, step);
@@ -104,6 +116,9 @@ public class Simulation implements Runnable {
 
             // repaint
             lifeCanvas.draw();
+
+            // update  info
+            infoPanel.updateStats(this);
 
             // move to next step
             step++;

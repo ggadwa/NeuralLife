@@ -14,25 +14,38 @@ public class Item {
     public final static int IMAGE_SIZE = 16;
     public final static int IMAGE_OFFSET = 8;
 
+    private final static Color SIGHT_COLOR = new Color(0.0f, 0.75f, 0.75f);
+
     private final Configuration config;
     private final Random random;
     private final LifeCanvas lifeCanvas;
     private final Board board;
-    private final Point pnt;
-    private final BufferedImage img;
+
+    private Point pnt;
+    private BufferedImage img;
     private int sightAngle, sightSweep, sightDistance;
 
-    public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, Point pnt, BufferedImage img) {
+    public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board) {
         this.config = config;
         this.random = random;
         this.lifeCanvas = lifeCanvas;
         this.board = board;
-        this.pnt = (Point) pnt.clone();
-        this.img = img;
+
+        this.pnt = new Point(0, 0);
+        this.img = null;
 
         this.sightAngle = 0;
         this.sightSweep = 0;
         this.sightDistance = 0;
+    }
+
+    protected final void setPoint(Point pnt) {
+        this.pnt.x = pnt.x;
+        this.pnt.y = pnt.y;
+    }
+
+    protected void setImage(BufferedImage img) {
+        this.img = img;
     }
 
     protected final void setupSight(int sweep, int distance) {
@@ -76,7 +89,7 @@ public class Item {
                 startAng = 360 + startAng;
             }
 
-            g.setColor(Color.BLUE);
+            g.setColor(SIGHT_COLOR);
             g.fillArc(x, y, sightDistance, sightDistance, startAng, sightSweep);
         }
     }

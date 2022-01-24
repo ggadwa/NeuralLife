@@ -1,5 +1,6 @@
 package com.klinksoftware.neurallife;
 
+import com.klinksoftware.neurallife.simulation.Simulation;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -10,6 +11,9 @@ public class InfoPanel extends JPanel {
     private static final int NAME_WIDTH = 150;
     private static final int VALUE_WIDTH = 100;
     private static final int LINE_HEIGHT = 25;
+
+    private static final Color EVEN_LINE_COLOR = new Color(0.9f, 0.9f, 1.0f);
+    private static final Color ODD_LINE_COLOR = new Color(0.7f, 0.7f, 1.0f);
 
     private JLabel stepValue;
 
@@ -30,13 +34,13 @@ public class InfoPanel extends JPanel {
         nameLabel.setHorizontalAlignment(JLabel.RIGHT);
         nameLabel.setBounds(1, top, NAME_WIDTH, LINE_HEIGHT);
         nameLabel.setOpaque(true);
-        nameLabel.setBackground(even ? Color.WHITE : Color.GRAY);
+        nameLabel.setBackground(even ? EVEN_LINE_COLOR : ODD_LINE_COLOR);
         add(nameLabel);
 
         valueLabel = new JLabel(value);
         valueLabel.setBounds((NAME_WIDTH + 1), top, (VALUE_WIDTH - 1), LINE_HEIGHT);
         valueLabel.setOpaque(true);
-        valueLabel.setBackground(even ? Color.WHITE : Color.GRAY);
+        valueLabel.setBackground(even ? EVEN_LINE_COLOR : ODD_LINE_COLOR);
         add(valueLabel);
 
         return (valueLabel);
@@ -46,5 +50,9 @@ public class InfoPanel extends JPanel {
         stepValue = addSingleControlLine(0, "Step", "0");
         addSingleControlLine(1, "Test", "1");
         addSingleControlLine(2, "Test2", "2");
+    }
+
+    public void updateStats(Simulation simulation) {
+        stepValue.setText(Integer.toString(simulation.getStep()));
     }
 }

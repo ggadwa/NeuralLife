@@ -1,0 +1,11 @@
+Commands
+
+1. walk down sight
+2. move sight +/- sight 
+
++ need to add sight max turn (robot/monster)
+
+
+
+node:
+  1. mental map of every item in 360

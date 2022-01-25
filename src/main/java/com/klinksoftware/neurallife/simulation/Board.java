@@ -2,6 +2,7 @@ package com.klinksoftware.neurallife.simulation;
 
 import com.klinksoftware.neurallife.LifeCanvas;
 import com.klinksoftware.neurallife.item.Item;
+import com.klinksoftware.neurallife.item.ItemDanger;
 import com.klinksoftware.neurallife.item.ItemFood;
 import com.klinksoftware.neurallife.item.ItemMonster;
 import com.klinksoftware.neurallife.item.ItemRobot;
@@ -10,24 +11,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
-import javax.imageio.ImageIO;
 
 public class Board {
 
     public static final int STATUS_BAR_HEIGHT = 30;
 
-    private static final String[] IMAGE_NAMES = {"food", "rock", "monster", "robot"};
     private static final Color BACKGROUND_COLOR = new Color(0.2f, 1.0f, 0.2f);
 
     private ArrayList<Item> items;
     private int produceFoodNextStep;
     private Font font;
-    private HashMap<String, BufferedImage> imgs;
     private final Configuration config;
     private final Random random;
     private final LifeCanvas lifeCanvas;
@@ -42,20 +37,6 @@ public class Board {
 
         // misc setup
         font = new Font("Helvetica", Font.PLAIN, 18);
-
-        // images
-        imgs = new HashMap<>();
-
-        try {
-            for (String name : IMAGE_NAMES) {
-                imgs.put(name, ImageIO.read(getClass().getResource("/graphics/" + name + ".png")));
-            }
-        } catch (IOException e) {
-        }
-    }
-
-    public BufferedImage getImage(String name) {
-        return (imgs.get(name));
     }
 
     public void startup() {
@@ -68,18 +49,23 @@ public class Board {
         // some specific steps
         produceFoodNextStep = 0;
 
+        // robot
+        addRobot(0);
+
         // rocks
         for (n = 0; n != config.misc.rockCount; n++) {
             addRock();
+        }
+
+        // danger
+        for (n = 0; n != config.misc.dangerCount; n++) {
+            addDanger();
         }
 
         // monsters
         for (n = 0; n != config.monster.count; n++) {
             addMonster();
         }
-
-        // robot
-        addRobot(0);
 
         // initial food
         for (n = 0; n != config.food.initialCount; n++) {
@@ -164,6 +150,10 @@ public class Board {
 
     private void addRock() {
         items.add(new ItemRock(config, random, lifeCanvas, this));
+    }
+
+    private void addDanger() {
+        items.add(new ItemDanger(config, random, lifeCanvas, this));
     }
 
     private void addMonster() {

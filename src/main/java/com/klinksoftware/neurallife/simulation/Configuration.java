@@ -17,6 +17,7 @@ public class Configuration {
         robot = new ConfigurationRobot();
         robot.initialFuelCount = 100;
         robot.reproduceFuelCount = 150;
+        robot.sightMaxTurn = 45;
         robot.sightSweep = 45;
         robot.sightDistance = 200;
         robot.driveSurvival = 0;
@@ -27,6 +28,7 @@ public class Configuration {
         monster = new ConfigurationMonster();
         monster.count = 10;
         monster.minStartDistanceFromRobot = 250;
+        monster.sightMaxTurn = 45;
         monster.sightSweep = 45;
         monster.sightDistance = 200;
         monster.maxChaseStepCount = 10;
@@ -40,6 +42,7 @@ public class Configuration {
 
         misc = new ConfigurationMisc();
         misc.rockCount = 40;
+        misc.dangerCount = 10;
     }
 
     public class ConfigurationSetup {
@@ -51,6 +54,7 @@ public class Configuration {
     public class ConfigurationRobot {
         public int initialFuelCount;
         public int reproduceFuelCount;
+        public int sightMaxTurn;
         public int sightSweep;
         public int sightDistance;
         public int driveSurvival;
@@ -62,6 +66,7 @@ public class Configuration {
     public class ConfigurationMonster {
         public int count;
         public int minStartDistanceFromRobot;
+        public int sightMaxTurn;
         public int sightSweep;
         public int sightDistance;
         public int maxChaseStepCount;
@@ -77,5 +82,6 @@ public class Configuration {
 
     public class ConfigurationMisc {
         public int rockCount;
+        public int dangerCount;
     }
 }

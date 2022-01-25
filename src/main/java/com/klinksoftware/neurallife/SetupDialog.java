@@ -2,6 +2,7 @@ package com.klinksoftware.neurallife;
 
 import com.klinksoftware.neurallife.simulation.Configuration;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -19,19 +20,19 @@ import javax.swing.text.NumberFormatter;
 
 public class SetupDialog extends JDialog {
 
-    private static final int DIALOG_WIDTH = 500;
-    private static final int DIALOG_HEIGHT = 400;
+    private static final int DIALOG_WIDTH = 800;
+    private static final int DIALOG_HEIGHT = 450;
 
     private Configuration config;
     private JSlider setupMillisecondPerStep, setupWorldWidth, setupWorldHeight;
     private JSlider robotInitialFuelCount, robotReproduceFuelCount,
-            robotSightSweep, robotSightDistance;
+            robotSightMaxTurn, robotSightSweep, robotSightDistance;
     private JSlider robotDriveSurvival, robotDriveReproduce, robotDriveEat, robotDriveCuriosity;
     private JSlider monsterCount, monsterMinStartDistanceFromRobot,
-            monsterSightSweep, monsterSightDistance,
+            monsterSightMaxTurn, monsterSightSweep, monsterSightDistance,
             monsterMaxChaseStepCount, monsterChaseCoolDownStepCount;
     private JSlider foodPerStepAddRate, foodInitialCount, foodMaxCount, foodFuelPerFood;
-    private JSlider miscRockCount;
+    private JSlider miscRockCount, miscDangerCount;
 
     public SetupDialog(Frame parent, Configuration config) {
         super(parent, true);
@@ -45,6 +46,7 @@ public class SetupDialog extends JDialog {
 
         config.robot.initialFuelCount = (int) robotInitialFuelCount.getValue();
         config.robot.reproduceFuelCount = (int) robotReproduceFuelCount.getValue();
+        config.robot.sightMaxTurn = (int) robotSightMaxTurn.getValue();
         config.robot.sightSweep = (int) robotSightSweep.getValue();
         config.robot.sightDistance = (int) robotSightDistance.getValue();
 
@@ -55,6 +57,7 @@ public class SetupDialog extends JDialog {
 
         config.monster.count = (int) monsterCount.getValue();
         config.monster.minStartDistanceFromRobot = (int) monsterMinStartDistanceFromRobot.getValue();
+        config.monster.sightMaxTurn = (int) monsterSightMaxTurn.getValue();
         config.monster.sightSweep = (int) monsterSightSweep.getValue();
         config.monster.sightDistance = (int) monsterSightDistance.getValue();
         config.monster.maxChaseStepCount = (int) monsterMaxChaseStepCount.getValue();
@@ -66,9 +69,10 @@ public class SetupDialog extends JDialog {
         config.food.fuelPerFood = (int) foodFuelPerFood.getValue();
 
         config.misc.rockCount = (int) miscRockCount.getValue();
+        config.misc.dangerCount = (int) miscDangerCount.getValue();
     }
 
-    private JFormattedTextField addControl(JPanel controls, int y, int min, int max, String label) {
+    private JFormattedTextField addControl(JPanel controls, int row, int min, int max, String label) {
         JFormattedTextField field;
         NumberFormatter formatter;
 
@@ -79,28 +83,29 @@ public class SetupDialog extends JDialog {
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true);
 
-        controls.add(new JLabel(label), new GridBagConstraints(0, y, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+        controls.add(new JLabel(label), new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
         field = new JFormattedTextField(formatter);
         field.setColumns(10);
-        controls.add(field, new GridBagConstraints(1, y, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));
+        controls.add(field, new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));
 
         return (field);
     }
 
-    private JSlider addSlider(JPanel tab, int row, int min, int max, boolean showTicks, String label) {
+    private JSlider addSlider(JPanel tab, int row, int min, int max, int majorTickCount, boolean showTicks, String label) {
         int majorTick;
         JSlider field;
         NumberFormatter formatter;
 
         tab.add(new JLabel(label), new GridBagConstraints(0, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 
-        majorTick = (max - min) / 5;
+        majorTick = (max - min) / majorTickCount;
 
         field = new JSlider(JSlider.HORIZONTAL, min, max, min);
         field.setMajorTickSpacing(majorTick);
         field.setMinorTickSpacing(majorTick / 10);
         field.setPaintTicks(showTicks);
         field.setPaintLabels(showTicks);
+        field.setPreferredSize(new Dimension(300, field.getPreferredSize().height));
         tab.add(field, new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 0), 0, 0));
 
         return (field);
@@ -127,53 +132,56 @@ public class SetupDialog extends JDialog {
         setupTab = new JPanel(new GridBagLayout());
         tab.add("Setup", setupTab);
 
-        setupMillisecondPerStep = addSlider(setupTab, 0, 1000, 6000, true, "Millisecond Per Step:");
-        setupWorldWidth = addSlider(setupTab, 1, 500, 1000, true, "World Width:");
-        setupWorldHeight = addSlider(setupTab, 2, 500, 1000, true, "World Height:");
+        setupMillisecondPerStep = addSlider(setupTab, 0, 0, 1000, 5, true, "Millisecond Per Step:");
+        setupWorldWidth = addSlider(setupTab, 1, 500, 1000, 5, true, "World Width:");
+        setupWorldHeight = addSlider(setupTab, 2, 500, 1000, 5, true, "World Height:");
 
         // robot tab
         robotSetupTab = new JPanel(new GridBagLayout());
         tab.add("Robot Setup", robotSetupTab);
 
-        robotInitialFuelCount = addSlider(robotSetupTab, 0, 0, 1000, true, "Initial Fuel Count:");
-        robotReproduceFuelCount = addSlider(robotSetupTab, 1, 0, 1000, true, "Reproduce Fuel Count:");
-        robotSightSweep = addSlider(robotSetupTab, 2, 0, 225, true, "Sight Sweep Angle:");
-        robotSightDistance = addSlider(robotSetupTab, 3, 0, 500, true, "Sight Distance:");
+        robotInitialFuelCount = addSlider(robotSetupTab, 0, 0, 1000, 5, true, "Initial Fuel Count:");
+        robotReproduceFuelCount = addSlider(robotSetupTab, 1, 0, 1000, 5, true, "Reproduce Fuel Count:");
+        robotSightMaxTurn = addSlider(robotSetupTab, 2, 0, 360, 4, true, "Sight Max Turn:");
+        robotSightSweep = addSlider(robotSetupTab, 3, 0, 360, 4, true, "Sight Sweep Angle:");
+        robotSightDistance = addSlider(robotSetupTab, 4, 0, 500, 5, true, "Sight Distance:");
 
         // drive tab
         robotDriveTab = new JPanel(new GridBagLayout());
         tab.add("Robot Drive", robotDriveTab);
 
-        robotDriveSurvival = addSlider(robotDriveTab, 0, 0, 100, false, "Survival:");
-        robotDriveReproduce = addSlider(robotDriveTab, 1, 0, 100, false, "Reproduce:");
-        robotDriveEat = addSlider(robotDriveTab, 2, 0, 100, false, "Eat:");
-        robotDriveCuriosity = addSlider(robotDriveTab, 3, 0, 100, false, "Curiosity:");
+        robotDriveSurvival = addSlider(robotDriveTab, 0, 0, 100, 5, false, "Survival:");
+        robotDriveReproduce = addSlider(robotDriveTab, 1, 0, 100, 5, false, "Reproduce:");
+        robotDriveEat = addSlider(robotDriveTab, 2, 0, 100, 5, false, "Eat:");
+        robotDriveCuriosity = addSlider(robotDriveTab, 3, 0, 100, 5, false, "Curiosity:");
 
         // monster tab
         monsterTab = new JPanel(new GridBagLayout());
         tab.add("Monster", monsterTab);
 
-        monsterCount = addSlider(monsterTab, 0, 0, 100, true, "Count:");
-        monsterMinStartDistanceFromRobot = addSlider(monsterTab, 1, 0, 1000, true, "Min Start Distance from Robot:");
-        monsterSightSweep = addSlider(monsterTab, 2, 0, 225, true, "Sight Sweep Angle:");
-        monsterSightDistance = addSlider(monsterTab, 3, 0, 500, true, "Sight Distance:");
-        monsterMaxChaseStepCount = addSlider(monsterTab, 4, 0, 100, true, "Max Chase Step Count:");
-        monsterChaseCoolDownStepCount = addSlider(monsterTab, 5, 0, 100, true, "Chase Cool Down Step Count:");
+        monsterCount = addSlider(monsterTab, 0, 0, 10, 2, true, "Count:");
+        monsterMinStartDistanceFromRobot = addSlider(monsterTab, 1, 0, 1000, 5, true, "Min Start Distance from Robot:");
+        monsterSightMaxTurn = addSlider(monsterTab, 2, 0, 360, 4, true, "Sight Max Turn:");
+        monsterSightSweep = addSlider(monsterTab, 3, 0, 360, 4, true, "Sight Sweep Angle:");
+        monsterSightDistance = addSlider(monsterTab, 4, 0, 500, 5, true, "Sight Distance:");
+        monsterMaxChaseStepCount = addSlider(monsterTab, 5, 0, 100, 5, true, "Max Chase Step Count:");
+        monsterChaseCoolDownStepCount = addSlider(monsterTab, 6, 0, 100, 5, true, "Chase Cool Down Step Count:");
 
         // food tab
         foodTab = new JPanel(new GridBagLayout());
         tab.add("Food", foodTab);
 
-        foodPerStepAddRate = addSlider(foodTab, 0, 0, 100, true, "Add Rate (by step):");
-        foodInitialCount = addSlider(foodTab, 1, 0, 100, true, "Initial Count:");
-        foodMaxCount = addSlider(foodTab, 2, 0, 100, true, "Max Count:");
-        foodFuelPerFood = addSlider(foodTab, 3, 0, 1000, true, "Fuel Per Food:");
+        foodPerStepAddRate = addSlider(foodTab, 0, 0, 100, 5, true, "Add Rate (by step):");
+        foodInitialCount = addSlider(foodTab, 1, 0, 50, 5, true, "Initial Count:");
+        foodMaxCount = addSlider(foodTab, 2, 0, 50, 5, true, "Max Count:");
+        foodFuelPerFood = addSlider(foodTab, 3, 0, 1000, 5, true, "Fuel Per Food:");
 
         // misc tab
         miscTab = new JPanel(new GridBagLayout());
         tab.add("Misc", miscTab);
 
-        miscRockCount = addSlider(miscTab, 0, 0, 100, true, "Rock Count:");
+        miscRockCount = addSlider(miscTab, 0, 0, 50, 5, true, "Rock Count:");
+        miscDangerCount = addSlider(miscTab, 1, 0, 50, 5, true, "Danger Count:");
 
         // the buttons
         buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -209,6 +217,7 @@ public class SetupDialog extends JDialog {
         // robot setup
         robotInitialFuelCount.setValue(config.robot.initialFuelCount);
         robotReproduceFuelCount.setValue(config.robot.reproduceFuelCount);
+        robotSightMaxTurn.setValue(config.robot.sightMaxTurn);
         robotSightSweep.setValue(config.robot.sightSweep);
         robotSightDistance.setValue(config.robot.sightDistance);
 
@@ -221,6 +230,7 @@ public class SetupDialog extends JDialog {
         // monster
         monsterCount.setValue(config.monster.count);
         monsterMinStartDistanceFromRobot.setValue(config.monster.minStartDistanceFromRobot);
+        monsterSightMaxTurn.setValue(config.monster.sightMaxTurn);
         monsterSightSweep.setValue(config.monster.sightSweep);
         monsterSightDistance.setValue(config.monster.sightDistance);
         monsterMaxChaseStepCount.setValue(config.monster.maxChaseStepCount);
@@ -234,6 +244,7 @@ public class SetupDialog extends JDialog {
 
         // misc
         miscRockCount.setValue(config.misc.rockCount);
+        miscDangerCount.setValue(config.misc.dangerCount);
 
         // show window
         setLocationRelativeTo(getParent());

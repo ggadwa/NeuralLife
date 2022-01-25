@@ -7,7 +7,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
+import javax.imageio.ImageIO;
 
 public class Item {
 
@@ -15,6 +18,8 @@ public class Item {
     public final static int IMAGE_OFFSET = 8;
 
     private final static Color SIGHT_COLOR = new Color(0.0f, 0.75f, 0.75f);
+
+    private final static HashMap<String, BufferedImage> imageCache;
 
     private final Configuration config;
     private final Random random;
@@ -24,6 +29,10 @@ public class Item {
     private Point pnt;
     private BufferedImage img;
     private int sightAngle, sightSweep, sightDistance;
+
+    static {
+        imageCache = new HashMap<>();
+    }
 
     public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board) {
         this.config = config;
@@ -44,8 +53,18 @@ public class Item {
         this.pnt.y = pnt.y;
     }
 
-    protected void setImage(BufferedImage img) {
-        this.img = img;
+    protected void setImage(String name) {
+        img = imageCache.get(name);
+        if (img == null) {
+
+            try {
+                img = ImageIO.read(getClass().getResource("/graphics/" + name + ".png"));
+            } catch (IOException e) {
+                return; // leave image null
+            }
+
+            imageCache.put(name, img);
+        }
     }
 
     protected final void setupSight(int sweep, int distance) {

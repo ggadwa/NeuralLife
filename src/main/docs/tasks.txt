@@ -4,8 +4,21 @@ Commands
 2. move sight +/- sight 
 
 + need to add sight max turn (robot/monster)
++ food bar
 
 
 
 node:
-  1. mental map of every item in 360
+  1. mental map (needs some kind of forget)
+  2. node have a "drive" succeeded flag
+
+Find a node with similar mental map, and one that has shortest path to drive
+If next node has similar mental map, keep going
+Otherwise branch to something random
+
+MAYBE
+
+- collection of mental maps
+- with drive succeeded flag
+- no tree, but each one is connected to the next one
+- path succeeded flag for each link (travel backwards up the linkage?)

@@ -11,7 +11,7 @@ public class ItemMonster extends Item {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getRandomPointWithDistanceFromCenter(config.monster.minStartDistanceFromRobot));
-        setImage(board.getImage("monster"));
+        setImage("monster");
         setupSight(config.monster.sightSweep, config.monster.sightDistance);
         setSightAngle(random.nextInt(360));
     }

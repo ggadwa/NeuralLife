@@ -11,7 +11,7 @@ public class ItemRock extends Item {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getRandomPoint());
-        setImage("rock");
+        setImage("rock", 0.0f, 0.0f, 0.0f);
     }
 
     @Override

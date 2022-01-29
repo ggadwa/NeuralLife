@@ -11,7 +11,7 @@ public class ItemFood extends Item {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getRandomPoint());
-        setImage("food");
+        setImage("food", 0.0f, 0.0f, 0.0f);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class ItemDanger extends Item {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getRandomPoint());
-        setImage("danger");
+        setImage("danger", 0.0f, 0.0f, 0.0f);
     }
 
     @Override

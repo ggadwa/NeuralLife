@@ -11,7 +11,7 @@ public class ItemRobot extends Item {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getCenterPoint());
-        setImage("robot");
+        setImage("robot", 0.2f, 0.2f, 0.8f);
         setupSight(config.robot.sightSweep, config.robot.sightDistance);
         setSightAngle(random.nextInt(360));
     }

@@ -17,7 +17,7 @@ public class Item {
     public final static int IMAGE_SIZE = 16;
     public final static int IMAGE_OFFSET = 8;
 
-    private final static Color SIGHT_COLOR = new Color(0.0f, 0.75f, 0.75f);
+    private final static float GENERAL_MOVE_SPEED = (float) IMAGE_SIZE;
 
     private final static HashMap<String, BufferedImage> imageCache;
 
@@ -29,6 +29,7 @@ public class Item {
     private Point pnt;
     private BufferedImage img;
     private int sightAngle, sightSweep, sightDistance;
+    private Color sightColor;
 
     static {
         imageCache = new HashMap<>();
@@ -46,6 +47,15 @@ public class Item {
         this.sightAngle = 0;
         this.sightSweep = 0;
         this.sightDistance = 0;
+        this.sightColor = null;
+    }
+
+    protected Configuration getConfig() {
+        return (config);
+    }
+
+    protected Random getRandom() {
+        return (random);
     }
 
     protected final void setPoint(Point pnt) {
@@ -53,7 +63,7 @@ public class Item {
         this.pnt.y = pnt.y;
     }
 
-    protected void setImage(String name) {
+    protected void setImage(String name, float sightRed, float sightGreen, float sightBlue) {
         img = imageCache.get(name);
         if (img == null) {
 
@@ -65,19 +75,54 @@ public class Item {
 
             imageCache.put(name, img);
         }
+
+        sightColor = new Color(sightRed, sightGreen, sightBlue);
     }
 
     protected final void setupSight(int sweep, int distance) {
-        this.sightSweep = sweep;
-        this.sightDistance = distance;
+        sightSweep = sweep;
+        sightDistance = distance;
     }
 
     protected final void setSightAngle(int angle) {
-        this.sightAngle = angle;
+        sightAngle = angle % 360;
     }
 
     protected final int getSightAngle() {
         return (sightAngle);
+    }
+
+    protected final boolean moveDownSight() {
+        double rad;
+        boolean edgeFail;
+
+        rad = Math.toRadians(sightAngle);
+        pnt.x += (GENERAL_MOVE_SPEED * Math.cos(rad));
+        pnt.y -= (GENERAL_MOVE_SPEED * Math.sin(rad));
+
+        edgeFail = false;
+
+        if (pnt.x < IMAGE_OFFSET) {
+            pnt.x = IMAGE_OFFSET;
+            edgeFail = true;
+        } else {
+            if (pnt.x > (config.setup.worldWidth - IMAGE_OFFSET)) {
+                pnt.x = (config.setup.worldWidth - IMAGE_OFFSET) - 1;
+                edgeFail = true;
+            }
+        }
+
+        if (pnt.y < IMAGE_OFFSET) {
+            pnt.y = IMAGE_OFFSET;
+            edgeFail = true;
+        } else {
+            if (pnt.y > (config.setup.worldHeight - IMAGE_OFFSET)) {
+                pnt.y = (config.setup.worldHeight - IMAGE_OFFSET) - 1;
+                edgeFail = true;
+            }
+        }
+
+        return (edgeFail);
     }
 
     public boolean collide(Point pnt2) {
@@ -108,7 +153,7 @@ public class Item {
                 startAng = 360 + startAng;
             }
 
-            g.setColor(SIGHT_COLOR);
+            g.setColor(sightColor);
             g.fillArc(x, y, sightDistance, sightDistance, startAng, sightSweep);
         }
     }

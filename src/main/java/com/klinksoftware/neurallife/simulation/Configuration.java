@@ -31,6 +31,7 @@ public class Configuration {
         monster.sightMaxTurn = 45;
         monster.sightSweep = 45;
         monster.sightDistance = 200;
+        monster.maxMoveStepCount = 50;
         monster.maxChaseStepCount = 10;
         monster.chaseCoolDownStepCount = 5;
 
@@ -69,6 +70,7 @@ public class Configuration {
         public int sightMaxTurn;
         public int sightSweep;
         public int sightDistance;
+        public int maxMoveStepCount;
         public int maxChaseStepCount;
         public int chaseCoolDownStepCount;
     }

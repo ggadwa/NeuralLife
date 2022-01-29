@@ -7,17 +7,65 @@ import java.util.Random;
 
 public class ItemMonster extends Item {
 
+    private final static int STATE_TURN = 0;
+    private final static int STATE_MOVE = 1;
+    private final static int STATE_CHASE = 2;
+
+    private int state;
+    private int stepCount;
+
     public ItemMonster(Configuration config, Random random, LifeCanvas lifeCanvas, Board board) {
         super(config, random, lifeCanvas, board);
 
         setPoint(board.getRandomPointWithDistanceFromCenter(config.monster.minStartDistanceFromRobot));
-        setImage("monster");
+        setImage("monster", 0.8f, 0.2f, 0.2f);
         setupSight(config.monster.sightSweep, config.monster.sightDistance);
         setSightAngle(random.nextInt(360));
+
+        state = STATE_TURN;
+    }
+
+    private void runStepTurn(int step) {
+        int turn;
+        Configuration config = getConfig();
+        Random random = getRandom();
+
+        turn = (int) ((float) config.monster.sightMaxTurn * (random.nextFloat(2.0f) - 1.0f));
+        setSightAngle(getSightAngle() + turn);
+
+        state = STATE_MOVE;
+        stepCount = (int) ((float) config.monster.maxMoveStepCount * random.nextFloat());
+    }
+
+    private void runStepMove(int step) {
+        if (moveDownSight()) {
+            setSightAngle(getSightAngle() + 180);
+            stepCount = 0;
+        }
+
+        stepCount--;
+        if (stepCount <= 0) {
+            state = STATE_TURN;
+        }
+    }
+
+    private void runStepChase(int step) {
+
     }
 
     @Override
     public void runStep(int step) {
+        switch (state) {
+            case STATE_TURN:
+                runStepTurn(step);
+                break;
+            case STATE_MOVE:
+                runStepMove(step);
+                break;
+            case STATE_CHASE:
+                runStepChase(step);
+                break;
+        }
         setSightAngle((getSightAngle() + 1) % 360);
     }
 }

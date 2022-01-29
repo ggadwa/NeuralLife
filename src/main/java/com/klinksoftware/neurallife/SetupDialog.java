@@ -21,7 +21,7 @@ import javax.swing.text.NumberFormatter;
 public class SetupDialog extends JDialog {
 
     private static final int DIALOG_WIDTH = 800;
-    private static final int DIALOG_HEIGHT = 450;
+    private static final int DIALOG_HEIGHT = 500;
 
     private Configuration config;
     private JSlider setupMillisecondPerStep, setupWorldWidth, setupWorldHeight;
@@ -30,7 +30,7 @@ public class SetupDialog extends JDialog {
     private JSlider robotDriveSurvival, robotDriveReproduce, robotDriveEat, robotDriveCuriosity;
     private JSlider monsterCount, monsterMinStartDistanceFromRobot,
             monsterSightMaxTurn, monsterSightSweep, monsterSightDistance,
-            monsterMaxChaseStepCount, monsterChaseCoolDownStepCount;
+            monsterMaxMoveStepCount, monsterMaxChaseStepCount, monsterChaseCoolDownStepCount;
     private JSlider foodPerStepAddRate, foodInitialCount, foodMaxCount, foodFuelPerFood;
     private JSlider miscRockCount, miscDangerCount;
 
@@ -60,6 +60,7 @@ public class SetupDialog extends JDialog {
         config.monster.sightMaxTurn = (int) monsterSightMaxTurn.getValue();
         config.monster.sightSweep = (int) monsterSightSweep.getValue();
         config.monster.sightDistance = (int) monsterSightDistance.getValue();
+        config.monster.maxMoveStepCount = (int) monsterMaxMoveStepCount.getValue();
         config.monster.maxChaseStepCount = (int) monsterMaxChaseStepCount.getValue();
         config.monster.chaseCoolDownStepCount = (int) monsterChaseCoolDownStepCount.getValue();
 
@@ -164,8 +165,9 @@ public class SetupDialog extends JDialog {
         monsterSightMaxTurn = addSlider(monsterTab, 2, 0, 360, 4, true, "Sight Max Turn:");
         monsterSightSweep = addSlider(monsterTab, 3, 0, 360, 4, true, "Sight Sweep Angle:");
         monsterSightDistance = addSlider(monsterTab, 4, 0, 500, 5, true, "Sight Distance:");
-        monsterMaxChaseStepCount = addSlider(monsterTab, 5, 0, 100, 5, true, "Max Chase Step Count:");
-        monsterChaseCoolDownStepCount = addSlider(monsterTab, 6, 0, 100, 5, true, "Chase Cool Down Step Count:");
+        monsterMaxMoveStepCount = addSlider(monsterTab, 5, 0, 100, 5, true, "Max Move Step Count:");
+        monsterMaxChaseStepCount = addSlider(monsterTab, 6, 0, 100, 5, true, "Max Chase Step Count:");
+        monsterChaseCoolDownStepCount = addSlider(monsterTab, 7, 0, 100, 5, true, "Chase Cool Down Step Count:");
 
         // food tab
         foodTab = new JPanel(new GridBagLayout());
@@ -233,6 +235,7 @@ public class SetupDialog extends JDialog {
         monsterSightMaxTurn.setValue(config.monster.sightMaxTurn);
         monsterSightSweep.setValue(config.monster.sightSweep);
         monsterSightDistance.setValue(config.monster.sightDistance);
+        monsterMaxMoveStepCount.setValue(config.monster.maxMoveStepCount);
         monsterMaxChaseStepCount.setValue(config.monster.maxChaseStepCount);
         monsterChaseCoolDownStepCount.setValue(config.monster.chaseCoolDownStepCount);
 

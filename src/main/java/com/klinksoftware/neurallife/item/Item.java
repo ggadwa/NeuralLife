@@ -92,40 +92,43 @@ public class Item {
         return (sightAngle);
     }
 
-    protected final boolean moveDownSight() {
-        double rad;
-        boolean edgeFail;
-
-        rad = Math.toRadians(sightAngle);
-        pnt.x += (GENERAL_MOVE_SPEED * Math.cos(rad));
-        pnt.y -= (GENERAL_MOVE_SPEED * Math.sin(rad));
-
-        edgeFail = false;
-
-        if (pnt.x < IMAGE_OFFSET) {
-            pnt.x = IMAGE_OFFSET;
-            edgeFail = true;
-        } else {
-            if (pnt.x > (config.setup.worldWidth - IMAGE_OFFSET)) {
-                pnt.x = (config.setup.worldWidth - IMAGE_OFFSET) - 1;
-                edgeFail = true;
-            }
-        }
-
-        if (pnt.y < IMAGE_OFFSET) {
-            pnt.y = IMAGE_OFFSET;
-            edgeFail = true;
-        } else {
-            if (pnt.y > (config.setup.worldHeight - IMAGE_OFFSET)) {
-                pnt.y = (config.setup.worldHeight - IMAGE_OFFSET) - 1;
-                edgeFail = true;
-            }
-        }
-
-        return (edgeFail);
+    protected final void moveForward(Point vct) {
+        pnt.x += vct.x;
+        pnt.y += vct.y;
     }
 
-    public boolean collide(Point pnt2) {
+    protected final void moveBackward(Point vct) {
+        pnt.x -= vct.x;
+        pnt.y -= vct.y;
+    }
+
+    protected final Point getMoveDownSightVector() {
+        double rad;
+
+        rad = Math.toRadians(sightAngle);
+        return (new Point(
+                (int) (GENERAL_MOVE_SPEED * Math.cos(rad)),
+                -(int) (GENERAL_MOVE_SPEED * Math.sin(rad))
+        ));
+    }
+
+    protected final boolean isOffLeftEdge() {
+        return (pnt.x < IMAGE_OFFSET);
+    }
+
+    protected final boolean isOffRightEdge() {
+        return (pnt.x > (config.setup.worldWidth - IMAGE_OFFSET));
+    }
+
+    protected final boolean isOffTopEdge() {
+        return (pnt.y < IMAGE_OFFSET);
+    }
+
+    protected final boolean isOffBottomEdge() {
+        return (pnt.y > (config.setup.worldHeight - IMAGE_OFFSET));
+    }
+
+    public boolean collideWithPoint(Point pnt2) {
         if ((pnt.x - IMAGE_OFFSET) > (pnt2.x + IMAGE_OFFSET)) {
             return (false);
         }
@@ -136,6 +139,10 @@ public class Item {
             return (false);
         }
         return ((pnt.y + IMAGE_OFFSET) >= (pnt2.y - IMAGE_OFFSET));
+    }
+
+    public boolean collideWithItem(Item item) {
+        return (collideWithPoint(item.pnt));
     }
 
     public void backgroundDraw(Graphics2D g) {

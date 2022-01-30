@@ -3,6 +3,7 @@ package com.klinksoftware.neurallife.item;
 import com.klinksoftware.neurallife.LifeCanvas;
 import com.klinksoftware.neurallife.simulation.Board;
 import com.klinksoftware.neurallife.simulation.Configuration;
+import java.awt.Point;
 import java.util.Random;
 
 public class ItemMonster extends Item {
@@ -38,11 +39,39 @@ public class ItemMonster extends Item {
     }
 
     private void runStepMove(int step) {
-        if (moveDownSight()) {
-            setSightAngle(getSightAngle() + 180);
-            stepCount = 0;
+        Point vct;
+
+        vct = getMoveDownSightVector();
+        moveForward(vct);
+
+        // off the screen, turn around and
+        // go back to a random walk
+        if (isOffLeftEdge()) {
+            moveBackward(vct);
+            setSightAngle(0);
+            runStepTurn(step);
+            return;
+        }
+        if (isOffRightEdge()) {
+            moveBackward(vct);
+            setSightAngle(180);
+            runStepTurn(step);
+            return;
+        }
+        if (isOffTopEdge()) {
+            moveBackward(vct);
+            setSightAngle(270);
+            runStepTurn(step);
+            return;
+        }
+        if (isOffBottomEdge()) {
+            moveBackward(vct);
+            setSightAngle(90);
+            runStepTurn(step);
+            return;
         }
 
+        // next step count
         stepCount--;
         if (stepCount <= 0) {
             state = STATE_TURN;

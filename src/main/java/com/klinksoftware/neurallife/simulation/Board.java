@@ -122,7 +122,7 @@ public class Board {
 
             empty = true;
             for (Item item : items) {
-                if (item.collide(pnt)) {
+                if (item.collideWithPoint(pnt)) {
                     empty = false;
                     break;
                 }

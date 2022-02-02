@@ -21,21 +21,22 @@ public class Item {
 
     private final static HashMap<String, BufferedImage> imageCache;
 
-    private final Configuration config;
-    private final Random random;
-    private final LifeCanvas lifeCanvas;
-    private final Board board;
+    protected final Configuration config;
+    protected final Random random;
+    protected final LifeCanvas lifeCanvas;
+    protected final Board board;
 
-    private Point pnt;
     private BufferedImage img;
-    private int sightAngle, sightSweep, sightDistance;
     private Color sightColor;
+
+    protected Point pnt;
+    protected int sightAngle, sightSweep, sightDistance;
 
     static {
         imageCache = new HashMap<>();
     }
 
-    public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board) {
+    public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, String imageName, Color sightColor) {
         this.config = config;
         this.random = random;
         this.lifeCanvas = lifeCanvas;
@@ -48,48 +49,21 @@ public class Item {
         this.sightSweep = 0;
         this.sightDistance = 0;
         this.sightColor = null;
-    }
 
-    protected Configuration getConfig() {
-        return (config);
-    }
-
-    protected Random getRandom() {
-        return (random);
-    }
-
-    protected final void setPoint(Point pnt) {
-        this.pnt.x = pnt.x;
-        this.pnt.y = pnt.y;
-    }
-
-    protected void setImage(String name, float sightRed, float sightGreen, float sightBlue) {
-        img = imageCache.get(name);
+        // get the image
+        img = imageCache.get(imageName);
         if (img == null) {
 
             try {
-                img = ImageIO.read(getClass().getResource("/graphics/" + name + ".png"));
+                img = ImageIO.read(getClass().getResource("/graphics/" + imageName + ".png"));
             } catch (IOException e) {
                 return; // leave image null
             }
 
-            imageCache.put(name, img);
+            imageCache.put(imageName, img);
         }
 
-        sightColor = new Color(sightRed, sightGreen, sightBlue);
-    }
-
-    protected final void setupSight(int sweep, int distance) {
-        sightSweep = sweep;
-        sightDistance = distance;
-    }
-
-    protected final void setSightAngle(int angle) {
-        sightAngle = angle % 360;
-    }
-
-    protected final int getSightAngle() {
-        return (sightAngle);
+        this.sightColor = sightColor;
     }
 
     protected final void moveForward(Point vct) {
@@ -128,7 +102,7 @@ public class Item {
         return (pnt.y > (config.setup.worldHeight - IMAGE_OFFSET));
     }
 
-    public boolean collideWithPoint(Point pnt2) {
+    public boolean collideWithItemPoint(Point pnt2) {
         if ((pnt.x - IMAGE_OFFSET) > (pnt2.x + IMAGE_OFFSET)) {
             return (false);
         }
@@ -142,7 +116,7 @@ public class Item {
     }
 
     public boolean collideWithItem(Item item) {
-        return (collideWithPoint(item.pnt));
+        return (collideWithItemPoint(item.pnt));
     }
 
     public void backgroundDraw(Graphics2D g) {

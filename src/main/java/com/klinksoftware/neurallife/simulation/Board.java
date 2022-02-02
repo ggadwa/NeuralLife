@@ -103,6 +103,22 @@ public class Board {
         return (count);
     }
 
+    public Item collideOnBoard(Item checkItem) {
+        for (Item item : items) {
+            if (item == checkItem) {
+                continue;
+            }
+            if (checkItem.collideWithItem(item)) {
+                return (item);
+            }
+        }
+        return (null);
+    }
+
+    public boolean eatFood(ItemFood food) {
+        return (food.eat());
+    }
+
     public Point getCenterPoint() {
         return (new Point((config.setup.worldWidth / 2), (config.setup.worldHeight / 2)));
     }
@@ -122,7 +138,7 @@ public class Board {
 
             empty = true;
             for (Item item : items) {
-                if (item.collideWithPoint(pnt)) {
+                if (item.collideWithItemPoint(pnt)) {
                     empty = false;
                     break;
                 }
@@ -168,6 +184,10 @@ public class Board {
         items.add(new ItemFood(config, random, lifeCanvas, this));
     }
 
+    public void removeItem(Item item) {
+        items.remove(item);
+    }
+
     private void runStepProduceFood(int step) {
         int foodCount;
 
@@ -188,11 +208,27 @@ public class Board {
         addFood(step);
     }
 
+    public void runStepRemoveFood(int step) {
+        int n;
+        Item item;
+
+        for (n = (items.size() - 1); n >= 0; n--) {
+            item = items.get(n);
+            if (item instanceof ItemFood) {
+                if (((ItemFood) item).isEaten()) {
+                    items.remove(n);
+                }
+            }
+        }
+    }
+
     public void runStep(int step) {
         runStepProduceFood(step);
 
         for (Item item : items) {
             item.runStep(step);
         }
+
+        runStepRemoveFood(step);
     }
 }

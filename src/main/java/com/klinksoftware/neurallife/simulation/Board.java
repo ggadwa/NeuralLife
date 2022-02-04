@@ -8,46 +8,62 @@ import com.klinksoftware.neurallife.item.ItemMonster;
 import com.klinksoftware.neurallife.item.ItemRobot;
 import com.klinksoftware.neurallife.item.ItemRock;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import javax.imageio.ImageIO;
 
 public class Board {
 
     public static final int STATUS_BAR_HEIGHT = 30;
-
+    private static final String[] IMAGE_NAMES = {"danger", "food", "monster", "robot", "rock"};
     private static final Color BACKGROUND_COLOR = new Color(0.2f, 1.0f, 0.2f);
 
-    private ArrayList<Item> items;
-    private int produceFoodNextStep;
-    private Font font;
     private final Configuration config;
     private final Random random;
     private final LifeCanvas lifeCanvas;
+
+    private ArrayList<Item> items;
+    private int produceFoodNextStep;
+    private HashMap<String, BufferedImage> imageCache;
 
     public Board(Configuration config, Random random, LifeCanvas lifeCanvas) {
         this.config = config;
         this.random = random;
         this.lifeCanvas = lifeCanvas;
-
-        // no items
-        items = new ArrayList<>();
-
-        // misc setup
-        font = new Font("Helvetica", Font.PLAIN, 18);
     }
 
-    public void startup() {
+    public void loadResources() {
+        // load images
+        imageCache = new HashMap<>();
+
+        for (String imageName : IMAGE_NAMES) {
+            try {
+                imageCache.put(imageName, ImageIO.read(getClass().getResource("/graphics/" + imageName + ".png")));
+                imageCache.put((imageName + "_highlight"), ImageIO.read(getClass().getResource("/graphics/" + imageName + "_highlight.png")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public BufferedImage getImage(String name) {
+        return (imageCache.get(name));
+    }
+
+    public void start() {
         int n;
         Point pnt;
 
-        // no items
-        items = new ArrayList<>();
-
         // some specific steps
         produceFoodNextStep = 0;
+
+        // no items
+        items = new ArrayList<>();
 
         // robot
         addRobot(0);
@@ -109,6 +125,18 @@ public class Board {
                 continue;
             }
             if (checkItem.collideWithItem(item)) {
+                return (item);
+            }
+        }
+        return (null);
+    }
+
+    public Item itemWithinSightOnBoard(Item checkItem) {
+        for (Item item : items) {
+            if (item == checkItem) {
+                continue;
+            }
+            if (checkItem.itemWithinSight(item)) {
                 return (item);
             }
         }

@@ -29,6 +29,7 @@ public class Simulation implements Runnable {
         this.infoPanel = infoPanel;
 
         board = new Board(config, random, lifeCanvas);
+        board.loadResources();
 
         state = STATE_STOPPED;
     }
@@ -39,8 +40,7 @@ public class Simulation implements Runnable {
         nextTick = System.currentTimeMillis();
         state = STATE_RUNNING;
 
-        board = new Board(config, random, lifeCanvas);
-        board.startup();
+        board.start();
 
         thread = new Thread(this);
         thread.start();
@@ -74,10 +74,6 @@ public class Simulation implements Runnable {
     }
 
     // getters
-    public Board getBoard() {
-        return (board);
-    }
-
     public int getStep() {
         return (step);
     }

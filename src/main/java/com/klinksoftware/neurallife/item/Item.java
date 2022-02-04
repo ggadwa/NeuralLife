@@ -7,10 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Random;
-import javax.imageio.ImageIO;
 
 public class Item {
 
@@ -19,22 +16,15 @@ public class Item {
 
     private final static float GENERAL_MOVE_SPEED = (float) IMAGE_SIZE;
 
-    private final static HashMap<String, BufferedImage> imageCache;
-
     protected final Configuration config;
     protected final Random random;
     protected final LifeCanvas lifeCanvas;
     protected final Board board;
 
-    private BufferedImage img;
+    private String imageName;
     private Color sightColor;
-
     protected Point pnt;
     protected int sightAngle, sightSweep, sightDistance;
-
-    static {
-        imageCache = new HashMap<>();
-    }
 
     public Item(Configuration config, Random random, LifeCanvas lifeCanvas, Board board, String imageName, Color sightColor) {
         this.config = config;
@@ -42,27 +32,13 @@ public class Item {
         this.lifeCanvas = lifeCanvas;
         this.board = board;
 
+        this.imageName = imageName;
+
         this.pnt = new Point(0, 0);
-        this.img = null;
 
         this.sightAngle = 0;
         this.sightSweep = 0;
         this.sightDistance = 0;
-        this.sightColor = null;
-
-        // get the image
-        img = imageCache.get(imageName);
-        if (img == null) {
-
-            try {
-                img = ImageIO.read(getClass().getResource("/graphics/" + imageName + ".png"));
-            } catch (IOException e) {
-                return; // leave image null
-            }
-
-            imageCache.put(imageName, img);
-        }
-
         this.sightColor = sightColor;
     }
 
@@ -119,6 +95,41 @@ public class Item {
         return (collideWithItemPoint(item.pnt));
     }
 
+    public boolean itemWithinSight(Item item) {
+        int dist, ang;
+        int startArcAng, endArcAng;
+
+        // no sight
+        if (sightSweep == 0) {
+            return (false);
+        }
+
+        // within sight distance
+        dist = (int) Math.sqrt((double) (((item.pnt.x - pnt.x) ^ 2) + ((item.pnt.y - pnt.y) ^ 2)));
+        if (dist > sightDistance) {
+            return (false);
+        }
+
+        // within sight angle
+        ang = (int) Math.toDegrees(Math.atan2((item.pnt.y - pnt.y), (item.pnt.x - pnt.x)));
+
+        startArcAng = sightAngle - (sightSweep / 2);
+        if (startArcAng < 0) {
+            startArcAng = 360 + startArcAng;
+        }
+
+        endArcAng = startArcAng + sightSweep;
+        if (endArcAng >= 360) {
+            endArcAng -= 360;
+        }
+
+        if (startArcAng < endArcAng) {
+            return ((ang >= startArcAng) && (ang < endArcAng));
+        } else {
+            return ((ang > startArcAng) || (ang < endArcAng));
+        }
+    }
+
     public void backgroundDraw(Graphics2D g) {
         int x, y;
         int halfDistance, startAng;
@@ -140,6 +151,9 @@ public class Item {
     }
 
     public void foregroundDraw(Graphics2D g) {
+        BufferedImage img;
+
+        img = board.getImage((board.itemWithinSightOnBoard(this) == null) ? imageName : (imageName + "_highlight"));
         g.drawImage(img, (pnt.x - IMAGE_OFFSET), (pnt.y - IMAGE_OFFSET), lifeCanvas);
     }
 

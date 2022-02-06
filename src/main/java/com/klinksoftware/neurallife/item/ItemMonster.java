@@ -11,7 +11,8 @@ public class ItemMonster extends Item {
 
     private final static int STATE_TURN = 0;
     private final static int STATE_MOVE = 1;
-    private final static int STATE_CHASE = 2;
+    private final static int STATE_CHASE_FOOD = 2;
+    private final static int STATE_CHASE_PLAYER = 3;
 
     private int state;
     private int stepCount;
@@ -128,7 +129,11 @@ public class ItemMonster extends Item {
         }
     }
 
-    private void runStepChase(int step) {
+    private void runStepChaseFood(int step) {
+
+    }
+
+    private void runStepChasePlayer(int step) {
 
     }
 
@@ -141,8 +146,11 @@ public class ItemMonster extends Item {
             case STATE_MOVE:
                 runStepMove(step);
                 break;
-            case STATE_CHASE:
-                runStepChase(step);
+            case STATE_CHASE_FOOD:
+                runStepChaseFood(step);
+                break;
+            case STATE_CHASE_PLAYER:
+                runStepChasePlayer(step);
                 break;
         }
     }

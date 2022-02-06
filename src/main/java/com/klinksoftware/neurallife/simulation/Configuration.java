@@ -30,7 +30,7 @@ public class Configuration {
         monster.minStartDistanceFromRobot = 250;
         monster.sightMaxTurn = 45;
         monster.sightSweep = 45;
-        monster.sightDistance = 200;
+        monster.sightDistance = 100;
         monster.maxMoveStepCount = 50;
         monster.maxChaseStepCount = 10;
         monster.chaseCoolDownStepCount = 5;

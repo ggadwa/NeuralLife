@@ -105,13 +105,14 @@ public class Item {
         }
 
         // within sight distance
-        dist = (int) Math.sqrt((double) (((item.pnt.x - pnt.x) ^ 2) + ((item.pnt.y - pnt.y) ^ 2)));
+        dist = (int) Math.sqrt((Math.pow((double) (item.pnt.x - pnt.x), 2) + Math.pow((double) (item.pnt.y - pnt.y), 2)));
         if (dist > sightDistance) {
             return (false);
         }
 
         // within sight angle
         ang = (int) Math.toDegrees(Math.atan2((item.pnt.y - pnt.y), (item.pnt.x - pnt.x)));
+        ang = (ang < 0) ? (-ang) : (360 - ang);
 
         startArcAng = sightAngle - (sightSweep / 2);
         if (startArcAng < 0) {
@@ -131,22 +132,19 @@ public class Item {
     }
 
     public void backgroundDraw(Graphics2D g) {
-        int x, y;
-        int halfDistance, startAng;
+        int doubleDistance, startAng;
 
         // the sight arc
         if (sightSweep != 0) {
-            halfDistance = sightDistance / 2;
-            x = pnt.x - halfDistance;
-            y = pnt.y - halfDistance;
-
             startAng = sightAngle - (sightSweep / 2);
             if (startAng < 0) {
                 startAng = 360 + startAng;
             }
 
+            doubleDistance = sightDistance * 2;
+
             g.setColor(sightColor);
-            g.fillArc(x, y, sightDistance, sightDistance, startAng, sightSweep);
+            g.fillArc((pnt.x - sightDistance), (pnt.y - sightDistance), doubleDistance, doubleDistance, startAng, sightSweep);
         }
     }
 

@@ -136,7 +136,7 @@ public class Board {
             if (item == checkItem) {
                 continue;
             }
-            if (checkItem.itemWithinSight(item)) {
+            if (item.itemWithinSight(checkItem)) {
                 return (item);
             }
         }
@@ -145,6 +145,10 @@ public class Board {
 
     public boolean eatFood(ItemFood food) {
         return (food.eat());
+    }
+
+    public Item getItem(int index) {
+        return (items.get(index));
     }
 
     public Point getCenterPoint() {

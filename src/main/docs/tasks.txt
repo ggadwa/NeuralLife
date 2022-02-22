@@ -1,9 +1,16 @@
+
+
+Monsters
+1. turn away if spot other monster or danger
+2. turn towards any food
+
+
 Commands
 
 1. walk down sight
 2. move sight +/- sight 
 
-+ need to add sight max turn (robot/monster)
+
 + food bar
 
 

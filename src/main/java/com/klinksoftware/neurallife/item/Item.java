@@ -95,23 +95,18 @@ public class Item {
         return (collideWithItemPoint(item.pnt));
     }
 
-    public boolean itemWithinSight(Item item) {
+    public boolean pointWithinSight(int x, int y) {
         int dist, ang;
         int startArcAng, endArcAng;
 
-        // no sight
-        if (sightSweep == 0) {
-            return (false);
-        }
-
         // within sight distance
-        dist = (int) Math.sqrt((Math.pow((double) (item.pnt.x - pnt.x), 2) + Math.pow((double) (item.pnt.y - pnt.y), 2)));
+        dist = (int) Math.sqrt((Math.pow((double) (x - pnt.x), 2) + Math.pow((double) (y - pnt.y), 2)));
         if (dist > sightDistance) {
             return (false);
         }
 
         // within sight angle
-        ang = (int) Math.toDegrees(Math.atan2((item.pnt.y - pnt.y), (item.pnt.x - pnt.x)));
+        ang = (int) Math.toDegrees(Math.atan2((y - pnt.y), (x - pnt.x)));
         ang = (ang < 0) ? (-ang) : (360 - ang);
 
         startArcAng = sightAngle - (sightSweep / 2);
@@ -129,6 +124,25 @@ public class Item {
         } else {
             return ((ang > startArcAng) || (ang < endArcAng));
         }
+    }
+
+    public boolean itemWithinSight(Item item) {
+        // no sight
+        if (sightSweep == 0) {
+            return (false);
+        }
+
+        // check all four points
+        if (pointWithinSight((item.pnt.x - IMAGE_OFFSET), item.pnt.y)) {
+            return (true);
+        }
+        if (pointWithinSight((item.pnt.x + IMAGE_OFFSET), item.pnt.y)) {
+            return (true);
+        }
+        if (pointWithinSight(item.pnt.x, (item.pnt.y - IMAGE_OFFSET))) {
+            return (true);
+        }
+        return (pointWithinSight(item.pnt.x, (item.pnt.y + IMAGE_OFFSET)));
     }
 
     public void backgroundDraw(Graphics2D g) {
